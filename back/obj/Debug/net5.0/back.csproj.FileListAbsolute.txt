@@ -44,3 +44,13 @@ C:\Users\user\Desktop\NBP\projekat2\back\obj\Debug\net5.0\back.dll
 C:\Users\user\Desktop\NBP\projekat2\back\obj\Debug\net5.0\ref\back.dll
 C:\Users\user\Desktop\NBP\projekat2\back\obj\Debug\net5.0\back.pdb
 C:\Users\user\Desktop\NBP\projekat2\back\obj\Debug\net5.0\back.genruntimeconfig.cache
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\IdentityModel.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\IdentityModel.AspNetCore.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\user\Desktop\NBP\projekat2\back\bin\Debug\net5.0\BCrypt.Net-Next.dll

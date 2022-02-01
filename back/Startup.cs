@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using back.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,7 @@ namespace back
         {
 
             services.AddControllers();
+            services.AddScoped<JwtService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "back", Version = "v1" });
@@ -47,6 +49,13 @@ namespace back
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(options =>
+          options.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins(new string[]{
+                "http://localhost:3000",
+                "http://localhost:8080",
+                "http://localhost:4200"
+          }));
 
             app.UseAuthorization();
 
