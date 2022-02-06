@@ -1,0 +1,123 @@
+.divGlavniProizvodi
+{
+    display: flex;
+    
+}
+
+.divLeftProizvodi
+{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(224, 218, 218);
+    width: 7cm;
+    height: 100vh;
+    padding-top: 2cm;
+    padding-left: 0.5cm;
+    align-items: flex-start;
+    font-size: 0.3cm;
+}
+.labProizvodi
+{
+    margin-bottom: 20px;
+}
+.btnProizvodi
+{
+    background-color: gray;
+    height: 0.9cm;
+    width: 4cm;
+
+}
+.divRightProizvodi ,.proizvodiii
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+}
+.divPomRight
+{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding: 15px;
+}
+.bi {
+    size: 0.8cm;
+}
+.proizvod
+{
+    display: flex;
+    margin:10px;
+    border:solid gray 1px;
+    padding: 5px;
+}
+.slikaProizvoda
+{
+    width: 250px;
+    height: 200px;
+    margin-right: 10px;
+
+}
+.opisProizvoda
+{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    
+    align-items: flex-start;
+    padding-right: 20px;
+}
+.divSlikaProizvoda
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.inputOcena
+{
+    display: none;
+}
+.star
+{
+    cursor: pointer;
+    transition: color 200ms;
+}
+.dugmiciProizvod
+{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+.dugmeProizvod
+{
+    margin: 5px;
+    background-color: rgb(160, 156, 156);
+    height: 0.8cm;
+    width: 3.5cm;
+}
+.pagination
+{
+    margin-right: 350px;
+}
+.labModal
+{
+    margin:30px;
+}
+.inputModal
+{
+    width: 10px;
+    height: 1cm;
+    margin-right: 20px;
+    
+}
+.modaal
+{
+    display:flex;
+    flex-direction:column;
+    width:700px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-left: 30px;
+
+}

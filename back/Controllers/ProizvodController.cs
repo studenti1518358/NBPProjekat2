@@ -113,6 +113,20 @@ namespace back.Controllers
             
         }
 
+        [HttpGet]
+        [Route("pretraziProizvode")]
+        public async Task<IActionResult> PretraziProizvode([FromBody] ProizvodiPretraga parametri)
+        {
+            var connectionString = "mongodb://localhost/?safe=true";
+            var client = new MongoClient(connectionString);
+            var db = client.GetDatabase("butik");
+
+            var proizvodi = db.GetCollection<Proizvod>("proizvodi");
+            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MinCena).Skip(parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1)).Limit(parametri.BrProizvodaPoStranici).ToListAsync();
+
+            return Ok(pretragaRez);
+        }
+
 
     }
 }

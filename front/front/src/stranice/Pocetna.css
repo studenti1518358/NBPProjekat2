@@ -1,0 +1,58 @@
+.divGlavniPocetna
+{
+    background-color: rgb(20, 20, 20);
+    display:flex;
+    flex-direction: column;
+    width: 100%;
+    height: 120vh;
+}
+.divCarousel
+{
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+.pomCarousel
+{
+    height: 85vh;
+}
+.naslovCarousel
+{
+    display: flex;
+    margin-bottom: 450px;
+   
+  font-size: 60px;
+  color: #fff;
+  text-align: center;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+@keyframes glow {
+    from {
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 10px ;
+    }
+    to {
+      text-shadow: 0 0 20px #fff, 0 0 20px #ff4da6, 0 0 30px #ff4da6, 0 0 30px #ff4da6;
+    }
+  }
+.pomPocetnaDiv
+{
+    display: flex;
+    width: 90%;
+    border: solid whitesmoke;
+    margin:50px;
+}
+.pompomPocetna
+{
+    display: flex;
+    flex-direction: column;
+    width: 33%;
+    color:whitesmoke;
+}
+.footer
+{
+    
+    background-color: rgb(34, 33, 33);
+    color: whitesmoke;
+}
