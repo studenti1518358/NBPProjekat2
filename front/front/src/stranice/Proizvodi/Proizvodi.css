@@ -96,6 +96,11 @@
     height: 0.8cm;
     width: 3.5cm;
 }
+.dugmeProizvodd
+{
+    margin: 5px;
+    background-color: rgb(160, 156, 156);
+}
 .pagination
 {
     margin-right: 350px;
@@ -109,6 +114,7 @@
     width: 10px;
     height: 1cm;
     margin-right: 20px;
+    margin-left: 10px;
     
 }
 .modaal
@@ -120,4 +126,12 @@
     justify-content: flex-start;
     padding-left: 30px;
 
+}
+.divModal
+{
+    display:flex;
+    flex-direction:column;
+    width:450px;
+    border:solid black 1px;
+    margin:5px;
 }

@@ -10,10 +10,19 @@ export default function Proizvodi() {
     const [proizvodi,setProizvodi]=useState([])
     const [modal,setModal]=useState(false)
     const [modalIzmeni,setModalIzmeni]=useState(false)
+    const [modalDodaj,setModalDodaj]=useState(false)
+    const [modalPorudzbina,setModalPorudzbina]=useState(false)
     const [nazivIzmena,setNazivIzmena]=useState("")
     const [tipIzmena,setTipIzmena]=useState("")
     const [cenaIzmena,setCenaIzmena]=useState("")
+    const [slikaIzmenaIme,setSlikaIzmenaIme]=useState("")
+    const [slikaIzmenaSrc,setSlikaIzmenaSrc]=useState("")
+    const [slikaIzmenaFile,setSlikaIzmenaFile]=useState(null)
+    const [slikaIme,setSlikaIme]=useState("")
+    const [slikaSrc,setSlikaSrc]=useState("")
+    const [slikaFile,setSlikaFile]=useState(null)
     const [velicinaIzmena,setVelicinaIzmena]=useState("")
+    const [kolicinaIzmena,setKolicinaIzmena]=useState("")
     const STAVKE_PO_STRANICI=5
 
     
@@ -23,7 +32,19 @@ export default function Proizvodi() {
             ime:"Dress Lucia",
             tip:"Haljina",
             cena:"3500",
-            velicine:"s,m,l,xl",
+            velicine:[
+            {
+                ime:'s',
+                kolicina:'30',           
+            },
+            {
+                ime:'m',
+                kolicina:'40',           
+            },
+            {
+                ime:'l',
+                kolicina:'50',           
+            }],
             ocena:"4,3",
             slika:"/slike/haljina1.jpg"
         },
@@ -32,7 +53,19 @@ export default function Proizvodi() {
             ime:"Dress Mia",
             tip:"Haljina",
             cena:"5500",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,6",
             slika:"/slike/haljina2.jpg"
         },
@@ -41,7 +74,19 @@ export default function Proizvodi() {
             ime:"Dress Alice",
             tip:"Haljina",
             cena:"6000",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,8",
             slika:"/slike/haljina3.jpg"
         },
@@ -50,7 +95,19 @@ export default function Proizvodi() {
             ime:"Dress Melissa",
             tip:"Haljina",
             cena:"4500",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,3",
             slika:"/slike/haljina4.jpg"
         },
@@ -59,7 +116,19 @@ export default function Proizvodi() {
             ime:"Dress Laya",
             tip:"Haljina",
             cena:"8500",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,6",
             slika:"/slike/haljina6.jpg"
         },
@@ -68,7 +137,19 @@ export default function Proizvodi() {
             ime:"Jakna Lucia",
             tip:"Jakna",
             cena:"5500",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,3",
             slika:"/slike/jakna1.jpg"
         },
@@ -77,7 +158,19 @@ export default function Proizvodi() {
             ime:"Jakna Wilaa",
             tip:"Jakna",
             cena:"6500",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,2",
             slika:"/slike/jakna2.jpg"
         },
@@ -86,7 +179,19 @@ export default function Proizvodi() {
             ime:"Majica Wilaa",
             tip:"Majica",
             cena:"1500",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,2",
             slika:"/slike/majica1.jpg"
         },
@@ -95,7 +200,19 @@ export default function Proizvodi() {
             ime:"Majica Alice",
             tip:"Majica",
             cena:"1500",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,3",
             slika:"/slike/majica2.jpg"
         },
@@ -104,23 +221,72 @@ export default function Proizvodi() {
             ime:"Majica Kaya",
             tip:"Majica",
             cena:"1500",
-            velicine:"s,m,l,xl",
+            velicine:[
+                {
+                    ime:'s',
+                    kolicina:'30',           
+                },
+                {
+                    ime:'m',
+                    kolicina:'40',           
+                },
+                {
+                    ime:'l',
+                    kolicina:'50',           
+                }],
             ocena:"4,2",
             slika:"/slike/majica3.jpg"
         },
     ]
     const izmeniProizvod=(id)=> {
          
-        
-       
         const pr=niz.filter(p=>p.id===id)
         console.log(pr)
         setNazivIzmena(pr.map((pod)=>pod.ime))
         setTipIzmena(pr.map((pod)=>pod.tip))
         setCenaIzmena(pr.map((pod)=>pod.cena))
-        setVelicinaIzmena(pr.map((pod)=>pod.velicine))
+        let vel=""
+        let kol=""
+        pr.map(pod=>{
+           pod.velicine.map(v=>{
+               vel+=v.ime+","
+               kol+=v.kolicina+","
+
+           })
+        })
+        setVelicinaIzmena(vel)
+        setKolicinaIzmena(kol)
+        setSlikaIzmenaSrc(pr.map((pod)=>pod.velicine))
         setModalIzmeni(true)     
         
+  }
+  const izmeniSliku=(e)=>{
+    if(e.target.files && e.target.files[0])
+    {
+      let imgFile=e.target.files[0]
+      const reader= new FileReader()
+      reader.onload=x=>{
+        
+        setSlikaIzmenaSrc(x.target.result)
+      }
+      reader.readAsDataURL(imgFile)
+      setSlikaIzmenaFile(imgFile)
+      setSlikaIzmenaIme(imgFile.name)
+    }
+  }
+  const dodajSliku=(e)=>{
+    if(e.target.files && e.target.files[0])
+    {
+      let imgFile=e.target.files[0]
+      const reader= new FileReader()
+      reader.onload=x=>{
+        
+        setSlikaSrc(x.target.result)
+      }
+      reader.readAsDataURL(imgFile)
+      setSlikaFile(imgFile)
+      setSlikaIme(imgFile.name)
+    }
   }
 
     const svaRoba=useMemo(()=>{
@@ -134,6 +300,11 @@ export default function Proizvodi() {
 
      },[proizvodi,trStranica])
 
+ const pogledajPorudzbine=()=>{
+     setModalPorudzbina(true)
+
+
+ }
 
     
   return (
@@ -146,7 +317,7 @@ export default function Proizvodi() {
           <label className='labProizvodi'>Grad: Niš</label>
           <label className='labProizvodi'>Broj racuna: 5555-9999</label>
           <label className='labProizvodi'><i class="bi bi-cart"/> 0 rsd</label>
-          <button className='btnProizvodi'>Pogledaj svoju porudzbinu </button>
+          <button className='btnProizvodi' onClick={()=>pogledajPorudzbine()}>Pogledaj svoju porudzbinu </button>
       </div>
 
       <div className='divRightProizvodi'>
@@ -175,6 +346,7 @@ export default function Proizvodi() {
               <option value='2'> Prvo najjskuplje</option>
               
           </select>
+          <button className='dugmeProizvodd' onClick={()=>setModalDodaj(true)}>Dodaj novi proizvod </button>
           </div>
          <div className='proizvodiii'>
          { svaRoba.map((proizvod,i)=>(
@@ -201,7 +373,12 @@ export default function Proizvodi() {
                      <label>Naziv: {proizvod.ime} </label>
                      <label>Tip artikla: {proizvod.tip}</label>
                      <label>Cena: {proizvod.cena}</label>
-                     <label>Dostupne velicine: {proizvod.velicine}</label>
+                     <label>Dostupne velicine: {proizvod.velicine.map((vel,i)=>{
+                         return(
+                             <label> {vel.ime} : {vel.kolicina} </label>
+                         )
+
+                     })}</label>
                      <label>Ocena: {proizvod.ocena}</label>
                      <div className='dugmiciProizvod'>
                          <button className='dugmeProizvod'>Obrisi</button>
@@ -237,14 +414,21 @@ export default function Proizvodi() {
        <Modal show={modalIzmeni} className='modaal'>
               
               <Modal.Body className='modaal'>
+               <label className='labModal'>Slika:
+               <input type='file'
+               placeholder='Izaberi sliku'
+               id='slikaIzmena'
+               className='form-control-file chooseFile inputModal' onChange={izmeniSliku}/></label>
               <label className='labModal'>Naziv: 
               <input className='inputModal' type="text" defaultValue={nazivIzmena} /></label>
-              <label className='labModal'>Tip: 
+              <label className='labModal'>Tip:
               <input className='inputModal' type="text" defaultValue={tipIzmena}/></label>
               <label className='labModal'>Cena: 
               <input className='inputModal' type="number" defaultValue={cenaIzmena}/></label>
-              <label className='labModal'>Velicine: 
+              <label className='labModal'>Veličine: 
               <input className='inputModal' type="text" defaultValue={velicinaIzmena}/></label>
+              <label className='labModal'>Količina: 
+              <input className='inputModal' type="text" defaultValue={kolicinaIzmena}/></label>
               
              </Modal.Body>
               <Modal.Footer >
@@ -252,6 +436,49 @@ export default function Proizvodi() {
                   <Button onClick={()=>setModalIzmeni(false)}>Poništi</Button>
               </Modal.Footer>
           </Modal>
+          <Modal show={modalDodaj} className='modaal'>
+              
+              <Modal.Body className='modaal'>
+               <label className='labModal'>Slika:
+               <input type='file'
+               placeholder='Izaberi sliku'
+               id='slikaIzmena'
+               className='form-control-file chooseFile inputModal' onChange={dodajSliku}/></label>
+              <label className='labModal'>Naziv: 
+              <input className='inputModal' type="text"  /></label>
+              <label className='labModal'>Tip:
+              <input className='inputModal' type="text" /></label>
+              <label className='labModal'>Cena: 
+              <input className='inputModal' type="number" /></label>
+              <label className='labModal'>Veličine: 
+              <input className='inputModal' type="text" /></label>
+              <label className='labModal'>Količina: 
+              <input className='inputModal' type="text" /></label>
+              
+             </Modal.Body>
+              <Modal.Footer >
+                  <Button >Potvrdi</Button>
+                  <Button onClick={()=>setModalDodaj(false)}>Poništi</Button>
+              </Modal.Footer>
+          </Modal>
+
+          <Modal show={modalPorudzbina} className='modaal'>
+            <Modal.Body className='modaal'>
+                <div className='divModal'>
+                    <label>Naziv: Majica</label>
+                    <label>Velicina: L</label>
+                    <label>Cena: 2500</label>
+                    <label>Placena: Nije</label>
+                    <label>Datum placanja:/</label>
+                    <label>Datum porucivanja:25.06.2022. </label>
+
+                </div>
+            </Modal.Body>
+            <Modal.Footer >
+                <Button >Potvrdi</Button>
+                <Button onClick={()=>setModalPorudzbina(false)}>Ok</Button>
+            </Modal.Footer>
+         </Modal>
 
 
 
