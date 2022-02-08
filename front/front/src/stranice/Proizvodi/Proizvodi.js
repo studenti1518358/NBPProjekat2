@@ -1,5 +1,6 @@
 import React ,{useState,useMemo}from 'react'
 import './Proizvodi.css'
+import axios from 'axios'
 import {FaStar} from 'react-icons/fa'
 import {Table,Button,Modal,Alert,Row} from 'react-bootstrap'
 import PaginationComponent from '../../komponente/PaginationComponent'
@@ -15,6 +16,10 @@ export default function Proizvodi() {
     const [nazivIzmena,setNazivIzmena]=useState("")
     const [tipIzmena,setTipIzmena]=useState("")
     const [cenaIzmena,setCenaIzmena]=useState("")
+    const [opisIzmena,setOpisIzmena]=useState("")
+    const [velicineIzmena,setVelicineIzmena]=useState("")
+    const [kolicineIzmena,setKolicineIzmena]=useState("")
+    const [velKolIzmena,setVelKolIzmena]=useState([])
     const [slikaIzmenaIme,setSlikaIzmenaIme]=useState("")
     const [slikaIzmenaSrc,setSlikaIzmenaSrc]=useState("")
     const [slikaIzmenaFile,setSlikaIzmenaFile]=useState(null)
@@ -24,7 +29,13 @@ export default function Proizvodi() {
     const [velicinaIzmena,setVelicinaIzmena]=useState("")
     const [kolicinaIzmena,setKolicinaIzmena]=useState("")
     const STAVKE_PO_STRANICI=5
-
+    const [nazivNovi,setNazivNovi]=useState("")
+    const [tipNovi,setTipNovi]=useState("")
+    const [cenaNovi,setCenaNovi]=useState("")
+    const [opisNovi,setOpisNovi]=useState("")
+    const [velicineNovi,setVelicineNovi]=useState("")
+    const [kolicineNovi,setKolicineNovi]=useState("")
+    const [velKolNovi,setVelKolNovi]=useState([])
     
     const niz=[
         {
@@ -256,6 +267,7 @@ export default function Proizvodi() {
         })
         setVelicinaIzmena(vel)
         setKolicinaIzmena(kol)
+        setOpisIzmena(pr.map((pod)=>pod.ime))
         setSlikaIzmenaSrc(pr.map((pod)=>pod.velicine))
         setModalIzmeni(true)     
         
@@ -288,6 +300,96 @@ export default function Proizvodi() {
       setSlikaIme(imgFile.name)
     }
   }
+  const dodajNoviProizvod=()=>{
+     
+      var vel=velicineNovi.split(',')
+      var kol=kolicineNovi.split(',')
+      
+      for(let i=0;i<vel.length;i++)
+      {
+          velKolNovi[i]={naziv:vel[i],kolicina:kol[i]}
+      }
+      const formData=new FormData()
+      formData.append("slikaFile",slikaFile)
+      axios.post("http://localhost:5000/Proizvod/DodajNovuSliku",formData).then(p=>{  
+       
+        fetch("http://localhost:5000/Proizvod/DodajNoviProizvod",{
+            method:"POST",
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(
+                {
+                    naziv: nazivNovi,
+                    cena: cenaNovi,
+                    opis: opisNovi,
+                    slikaSrc: p.data,
+                    velicine: velKolNovi,
+                    tip: tipNovi
+                  }
+            )
+          }).then(q=>{
+              if(q.ok)
+              {
+                  setModalDodaj(false)
+              }
+          })
+        
+
+      })
+        
+      
+      
+  }
+  const IzmeniProizvod=()=>{
+
+    var vel=velicineIzmena.split(',')
+      var kol=kolicineIzmena.split(',')
+      
+      for(let i=0;i<vel.length;i++)
+      {
+          velKolIzmena[i]={naziv:vel[i],kolicina:kol[i]}
+      }
+      const formData=new FormData()
+      formData.append("slikaFile",slikaIzmenaFile)
+      axios.post("http://localhost:5000/Proizvod/DodajNovuSliku",formData).then(p=>{  
+       
+        fetch("http://localhost:5000/Proizvod/azurirajProizvod",{
+            method:"PUT",
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(
+                {
+                    naziv: nazivIzmena,
+                    cena: cenaIzmena,
+                    opis: opisIzmena,
+                    slikaSrc: p.data,
+                    velicine: velKolIzmena,
+                    tip: tipIzmena
+                  }
+            )
+          }).then(q=>{
+              if(q.ok)
+              {
+                  setModalIzmeni(false)
+              }
+          })
+        
+
+      })
+        
+
+  }
+  const obrisiProizvod=(ime)=>{
+    fetch("http://localhost:5000/Proizvod/obrisiProizvod"+ime,{
+        method:"DELETE"
+        
+      }).then(q=>{
+          if(q.ok)
+          {
+              window.location.reload()
+          }
+      })
+
+  }
+
 
     const svaRoba=useMemo(()=>{
       
@@ -381,7 +483,7 @@ export default function Proizvodi() {
                      })}</label>
                      <label>Ocena: {proizvod.ocena}</label>
                      <div className='dugmiciProizvod'>
-                         <button className='dugmeProizvod'>Obrisi</button>
+                         <button className='dugmeProizvod' onClick={()=>obrisiProizvod(proizvod.ime)}>Obrisi</button>
                          <button className='dugmeProizvod' onClick={()=>izmeniProizvod(proizvod.id)}>Izmeni</button>
                          <button className='dugmeProizvod' onClick={()=>setModal(true)}>Dodaj u <i class="bi bi-cart"/></button>
                      </div>
@@ -420,19 +522,21 @@ export default function Proizvodi() {
                id='slikaIzmena'
                className='form-control-file chooseFile inputModal' onChange={izmeniSliku}/></label>
               <label className='labModal'>Naziv: 
-              <input className='inputModal' type="text" defaultValue={nazivIzmena} /></label>
+              <input className='inputModal' type="text" defaultValue={nazivIzmena} onChange={(e)=>setNazivIzmena(e.target.value)} /></label>
               <label className='labModal'>Tip:
-              <input className='inputModal' type="text" defaultValue={tipIzmena}/></label>
+              <input className='inputModal' type="text" defaultValue={tipIzmena} onChange={(e)=>setTipIzmena(e.target.value)} /></label>
+              <label className='labModal'>Opis:
+              <input className='inputModal' type="text" defaultValue={tipIzmena} onChange={(e)=>setOpisIzmena(e.target.value)} /></label>
               <label className='labModal'>Cena: 
-              <input className='inputModal' type="number" defaultValue={cenaIzmena}/></label>
+              <input className='inputModal' type="number" defaultValue={cenaIzmena} onChange={(e)=>setCenaIzmena(e.target.value)} /></label>
               <label className='labModal'>Veličine: 
-              <input className='inputModal' type="text" defaultValue={velicinaIzmena}/></label>
+              <input className='inputModal' type="text" defaultValue={velicinaIzmena} onChange={(e)=>setVelicinaIzmena(e.target.value)}  /></label>
               <label className='labModal'>Količina: 
-              <input className='inputModal' type="text" defaultValue={kolicinaIzmena}/></label>
+              <input className='inputModal' type="text" defaultValue={kolicinaIzmena} onChange={(e)=>setKolicineIzmena(e.target.value)}/></label>
               
              </Modal.Body>
               <Modal.Footer >
-                  <Button >Potvrdi</Button>
+                  <Button onClick={()=>IzmeniProizvod()}>Potvrdi</Button>
                   <Button onClick={()=>setModalIzmeni(false)}>Poništi</Button>
               </Modal.Footer>
           </Modal>
@@ -445,19 +549,21 @@ export default function Proizvodi() {
                id='slikaIzmena'
                className='form-control-file chooseFile inputModal' onChange={dodajSliku}/></label>
               <label className='labModal'>Naziv: 
-              <input className='inputModal' type="text"  /></label>
+              <input className='inputModal' type="text" onChange={(e)=>setNazivNovi(e.target.value)}  /></label>
               <label className='labModal'>Tip:
-              <input className='inputModal' type="text" /></label>
+              <input className='inputModal' type="text" onChange={(e)=>setTipNovi(e.target.value)} /></label>
               <label className='labModal'>Cena: 
-              <input className='inputModal' type="number" /></label>
+              <input className='inputModal' type="number" onChange={(e)=>setCenaNovi(e.target.value)}/></label>
+              <label className='labModal'>Opis: 
+              <input className='inputModal' type="text" onChange={(e)=>setOpisNovi(e.target.value)}/></label>
               <label className='labModal'>Veličine: 
-              <input className='inputModal' type="text" /></label>
+              <input className='inputModal' type="text" onChange={(e)=>setVelicineNovi(e.target.value)}/></label>
               <label className='labModal'>Količina: 
-              <input className='inputModal' type="text" /></label>
+              <input className='inputModal' type="text" onChange={(e)=>setKolicineNovi(e.target.value)}/></label>
               
              </Modal.Body>
               <Modal.Footer >
-                  <Button >Potvrdi</Button>
+                  <Button onClick={()=>dodajNoviProizvod()}>Potvrdi</Button>
                   <Button onClick={()=>setModalDodaj(false)}>Poništi</Button>
               </Modal.Footer>
           </Modal>
