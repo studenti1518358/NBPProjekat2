@@ -7,5 +7,7 @@ namespace back.entities
         public int Broj { get; set; }
 
         public string Mesto { get; set; }
+
+       public string PostanskiBroj {get;set;}
     }
 }

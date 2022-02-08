@@ -1,0 +1,39 @@
+.naslov{
+    font-size: large;
+    background-color: #2dbbbb;
+    text-align: center;
+    padding: 10px;
+    color:whitesmoke;
+}
+
+.tabla{
+    margin:70px;
+    margin-top: 20px;
+    border-radius: 5px !important;
+    border:2px solid white;
+    box-shadow:rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; ;
+}
+
+.unos{
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    font-size: medium !important;
+    background-color: #ff69b4;
+    color:white;
+}
+.prInput{
+    background-color: whitesmoke;
+    max-width: 200px !important;
+    display:inline-block;
+    margin-left: 10px;
+    size: 100px !important;
+    
+    
+}
+.prLab{
+    font-size: medium !important;
+}
+.pdDiv{
+    max-width: 200px !important;
+}

@@ -1,0 +1,7 @@
+.kupacLink{
+    color:blue;
+    text-decoration: underline;
+}
+.kupacLink:hover{
+    cursor:pointer;
+}

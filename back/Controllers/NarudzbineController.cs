@@ -3,6 +3,8 @@ using back.entities;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -141,6 +143,33 @@ namespace back.Controllers
             });
             return Ok(aggregate);
         }
+		
+		[HttpGet]
+		[Route("getSveNarudzbine")]
+		public async Task<IActionResult> GetSveNarudzbine()
+		{
+			var connectionString = "mongodb://localhost/?safe=true";
+            var client = new MongoClient(connectionString);
+            var db = client.GetDatabase("butik");
+            var narudzbine = db.GetCollection<Narudzbina>("narudzbine");
+			var sveNarudzbine=await narudzbine.Find(Builders<Narudzbina>.Filter.Empty).ToListAsync();
+			//return Ok(sveNarudzbine);
+			List<NarudzbinaDetails> rezultat=new List<NarudzbinaDetails>();
+			foreach(var x in sveNarudzbine){
+                //var filter = Builders<Korisnik>.Filter.Eq(k => k.Id, x.KupacRef.Id.AsString);
+
+
+                var kupac =await db.GetCollection<Korisnik>(x.KupacRef.CollectionName).Find(k=>k.Id==x.KupacRef.Id).FirstOrDefaultAsync();
+                
+				NarudzbinaDetails nr=new NarudzbinaDetails{Id=x.Id.ToString(),NazivProizvoda=x.NazivProizvoda,CenaProizvoda=x.CenaProizvoda,VelicinaProizvoda=x.VelicinaProizvoda,Placena=x.Placena,DatumPorudzbine=new DateTime(x.DatumPorudzbine).ToString(),DatumPlacanja=x.DatumPlacanja!=-1?new DateTime(x.DatumPlacanja).ToString():"",EmailKupca=kupac.Mail,KontaktKupca=kupac.BrojTelefona};
+                rezultat.Add(nr);
+			}
+			rezultat.Reverse();
+			return Ok(rezultat);
+			
+		}
+
+     
 
     }
 }

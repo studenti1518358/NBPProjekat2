@@ -113,7 +113,7 @@ namespace back.Controllers
             
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("pretraziProizvode")]
         public async Task<IActionResult> PretraziProizvode([FromBody] ProizvodiPretraga parametri)
         {
@@ -122,7 +122,7 @@ namespace back.Controllers
             var db = client.GetDatabase("butik");
 
             var proizvodi = db.GetCollection<Proizvod>("proizvodi");
-            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MinCena).Skip(parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1)).Limit(parametri.BrProizvodaPoStranici).ToListAsync();
+            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).Skip(parametri.BrojStranice!=0?parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1):0).Limit(parametri.BrProizvodaPoStranici).ToListAsync();
 
             return Ok(pretragaRez);
         }

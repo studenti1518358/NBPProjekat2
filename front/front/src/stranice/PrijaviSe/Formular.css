@@ -21,6 +21,30 @@
     background-color:rgb(241, 234, 234);
 
 }
+.nazad{
+    text-align: left;
+    color: blue;
+   
+    margin-left: 10px;
+    text-decoration: underline;
+}
+.nazadLabel{
+
+    cursor:pointer 
+    ;
+}
+.plavoDugme{
+    border: none;
+    background-color:rgb(108, 108, 240);
+    border-radius: 4px;
+    padding: 10px;
+    color:white;
+    width:120px;
+}
+.nazadLabel:hover{
+    text-decoration: underline;
+    
+}
 .inputFormular
 {
     margin-bottom: 40px;

@@ -101,6 +101,20 @@ namespace back.Controllers
             return Ok("logout success");
         }
 
+        [HttpGet]
+        [Route("getKorisnikByMail/{mejl}")]
+        public async Task<IActionResult> GetKorisnikByMail(string mejl)
+        {
+            var connectionString = "mongodb://localhost/?safe=true";
+            var client = new MongoClient(connectionString);
+            var db = client.GetDatabase("butik");
+
+            var korisnici = db.GetCollection<Korisnik>("korisnici");
+            var korisnik = await korisnici.Find(x => x.Mail == mejl).FirstOrDefaultAsync();
+            return Ok(korisnik);
+
+        }
+
 
     }
 }
