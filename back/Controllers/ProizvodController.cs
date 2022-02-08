@@ -6,6 +6,15 @@ using MongoDB.Driver.Builders;
 using back.entities;
 using System.Linq;
 using MongoDB.Bson;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+
+
+
+using System;
+using System.IO;
+
+
 
 namespace back.Controllers
 {
@@ -14,22 +23,26 @@ namespace back.Controllers
     [Route("[controller]")]
     public class ProizvodController:ControllerBase
     {
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public ProizvodController()
+        public ProizvodController(IWebHostEnvironment env)
         {
-
+            this._hostEnvironment = env;
         }
 
         [HttpPost]
         [Route("dodajNoviProizvod")]
-        public async Task<IActionResult> DodajNoviProizvod([FromBody] NoviProizvod noviProizvod)
+        public async Task<IActionResult> DodajNoviProizvod([FromBody] NoviProizvod noviProizvod,[FromForm]IFormFile slika)
         {
             var connectionString = "mongodb://localhost/?safe=true";
             var client = new MongoClient(connectionString);
             var db=client.GetDatabase("butik");
 
+            var slikaPom = await SacuvajSliku(slika);
+            string profilna = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, slikaPom);
+
             var proizvodi = db.GetCollection<Proizvod>("proizvodi");
-            Proizvod proizvod = new Proizvod { BrojGlasova = 0, Ocena = 0, Naziv = noviProizvod.Naziv, Cena = noviProizvod.Cena, Opis = noviProizvod.Opis, SlikaSrc = noviProizvod.SlikaSrc, Tip = noviProizvod.Tip, Velicine = noviProizvod.Velicine };
+            Proizvod proizvod = new Proizvod { BrojGlasova = 0, Ocena = 0, Naziv = noviProizvod.Naziv, Cena = noviProizvod.Cena, Opis = noviProizvod.Opis, SlikaSrc = profilna, Tip = noviProizvod.Tip, Velicine = noviProizvod.Velicine };
 
             await proizvodi.InsertOneAsync(proizvod);
             var prodavnica = await db.GetCollection<Prodavnica>("prodavnica").Find(x => true).FirstOrDefaultAsync();
@@ -42,6 +55,20 @@ namespace back.Controllers
                 await prodavcnicaCol.ReplaceOneAsync(p => true, prodavnica);
             }
             return Ok("Novi proizvod uspesno dodat");
+
+        }
+        [NonAction]
+        public async Task<string> SacuvajSliku(IFormFile slika)
+        {
+            string imeSlike = new String(Path.GetFileNameWithoutExtension(slika.FileName).Take(10).ToArray()).Replace(' ', '-');
+
+            imeSlike = imeSlike + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(slika.FileName);
+            var slikaPath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imeSlike);
+            using (var fileStream = new FileStream(slikaPath, FileMode.Create))
+            {
+                await slika.CopyToAsync(fileStream);
+            }
+            return imeSlike;
 
         }
         [HttpGet]
@@ -77,11 +104,14 @@ namespace back.Controllers
 
         [HttpPost]
         [Route("azurirajProizvod")]
-        public async Task<IActionResult> AzurirajProizvod([FromBody]Proizvod proizvod)
+        public async Task<IActionResult> AzurirajProizvod([FromBody]Proizvod proizvod,[FromForm] IFormFile slika)
         {
             var connectionString = "mongodb://localhost/?safe=true";
             var client = new MongoClient(connectionString);
             var db = client.GetDatabase("butik");
+
+            var slikaPom = await SacuvajSliku(slika);
+            string profilna = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, slikaPom);
 
             var proizvodi = db.GetCollection<Proizvod>("proizvodi");
             var result = await proizvodi.ReplaceOneAsync(p => p.Naziv == proizvod.Naziv, proizvod);

@@ -19,7 +19,7 @@ namespace back.dtos
 
         public string SlikaSrc { get; set; }
 
-       
+        
 
         public List<Velicina> Velicine { get; set; }
 
