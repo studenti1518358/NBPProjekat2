@@ -66,7 +66,7 @@ namespace back.Controllers
             if (kupacId == MongoDB.Bson.ObjectId.Empty)
                 return BadRequest("Kupac sa navedenim mejlom ne postoji!");
             var narudzbine =  db.GetCollection<Narudzbina>("narudzbine");
-            var narudzbineKupca = await narudzbine.Find(x => x.KupacRef == new MongoDBRef("korisnici", kupacId)).Project(x=>new { x.NazivProizvoda,x.Placena,x.VelicinaProizvoda,id=x.Id.ToString(),x.DatumPlacanja,x.DatumPorudzbine}).ToListAsync();
+            var narudzbineKupca = await narudzbine.Find(x => x.KupacRef == new MongoDBRef("korisnici", kupacId)).Project(x=>new { x.NazivProizvoda,x.Placena,x.VelicinaProizvoda,id=x.Id.ToString(),datumPlacanja=x.DatumPlacanja!=-1?new DateTime(x.DatumPlacanja).ToString():"",datumPorudzbine=new DateTime(x.DatumPorudzbine).ToString(),x.CenaProizvoda}).ToListAsync();
             narudzbineKupca.Reverse();
             return Ok(narudzbineKupca);
         }
@@ -105,7 +105,7 @@ namespace back.Controllers
             var prodaje = db.GetCollection<Prodaja>("prodaje");
             long prviUMesecu = new DateTime(godina, mesec, 1).Ticks;
             long prviUSledecem = new DateTime(mesec==12?godina+1:godina, mesec==12?1:mesec + 1, 1).Ticks;
-            var prodajeMeseca = await prodaje.Find(x =>x.DatumProdaje>=prviUMesecu && x.DatumProdaje<prviUSledecem ).ToListAsync();
+            var prodajeMeseca = await prodaje.Find(x =>x.DatumProdaje>=prviUMesecu && x.DatumProdaje<prviUSledecem ).Project(x=>new{x.NazivProizvoda,x.CenaProizvoda,datumProdaje=new DateTime(x.DatumProdaje).ToString()}).ToListAsync();
             prodajeMeseca.Reverse();
             return Ok(prodajeMeseca);
 

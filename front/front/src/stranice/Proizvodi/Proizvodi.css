@@ -3,7 +3,19 @@
     display: flex;
     
 }
-
+.tablaNar{
+    
+}
+.modNar{
+   width:100%;
+}
+.korpa{
+    text-align: center;
+    color:rgb(109, 109, 214);
+}
+.korpaLab{
+    text-align: center;
+}
 .divLeftProizvodi
 {
     display: flex;
@@ -27,9 +39,11 @@
 .btnProizvodi
 {
     background-color: gray;
-    height: 0.9cm;
-    width: 4cm;
+    
 
+}
+.filterLab{
+    font-size: small;
 }
 .divRightProizvodi ,.proizvodiii
 {
@@ -107,7 +121,7 @@
 }
 .pagination
 {
-    margin-right: 100px;
+    margin-right: 30px;
 }
 .labModal
 {

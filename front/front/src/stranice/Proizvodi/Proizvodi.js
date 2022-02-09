@@ -4,6 +4,8 @@ import axios from 'axios'
 import {FaStar} from 'react-icons/fa'
 import {Table,Button,Modal,Alert,Row} from 'react-bootstrap'
 import PaginationComponent from '../../komponente/PaginationComponent'
+import NaruciModal from './NaruciModal'
+import Korpa from './Korpa'
 export default function Proizvodi() {
     const [ocena,setOcena]=useState(null)
     const [ukupnoStavki,setUkupnoStavki]=useState(0)
@@ -45,6 +47,7 @@ export default function Proizvodi() {
     const [ocene,setOcene]=useState([])
     const prijavljen=localStorage.getItem('prijavljen')
     const [korisnik,setKorisnik]=useState({})
+    const [naruciProizvod,setNaruciProizvod]=useState({})
 
     useEffect(()=>{
         const preuzmi=async()=>{
@@ -287,26 +290,26 @@ export default function Proizvodi() {
             slika:"/slike/majica3.jpg"
         },
     ]
-    const izmeniProizvod=(id)=> {
+    const izmeniProizvod=(ime)=> {
          
-        const pr=niz.filter(p=>p.id===id)
+        const pr=mojiProizvodi.filter(p=>p.naziv===ime)
         console.log(pr)
-        setNazivIzmena(pr.map((pod)=>pod.ime))
+        setNazivIzmena(pr.map((pod)=>pod.naziv))
         setTipIzmena(pr.map((pod)=>pod.tip))
         setCenaIzmena(pr.map((pod)=>pod.cena))
         let vel=""
         let kol=""
         pr.map(pod=>{
            pod.velicine.map(v=>{
-               vel+=v.ime+","
+               vel+=v.naziv+","
                kol+=v.kolicina+","
 
            })
         })
         setVelicinaIzmena(vel)
         setKolicinaIzmena(kol)
-        setOpisIzmena(pr.map((pod)=>pod.ime))
-        setSlikaIzmenaSrc(pr.map((pod)=>pod.velicine))
+        setOpisIzmena(pr.map((pod)=>pod.opis))
+        setSlikaIzmenaSrc(pr.map((pod)=>pod.slikaSrc))
         setModalIzmeni(true)     
         
   }
@@ -513,6 +516,26 @@ export default function Proizvodi() {
               setMojiProizvodi(proizvodi)
               
           }
+        if(trStranica===1){
+          const response=await fetch("http://localhost:5000/Proizvod/pretraziProizvode",{
+            method:"POST",
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(
+                {
+                    tipProizvoda: tip,
+                    brojStranice: 0,
+                    brProizvodaPoStranici: 20,
+                    minCena: minCena,
+                    maxCena: maxCena
+                  }
+            )
+          })
+          if(response.status===200){
+              const ukupno=await response.json()
+              setUkupnoProizvoda(ukupno)
+          }
+        }
+          
 
     }
     nadjiProizvode()
@@ -530,8 +553,8 @@ export default function Proizvodi() {
           <label className='labProizvodi'><b>Grad:</b> {korisnik.adresa.mesto}</label>
           <label className='labPostanski'><b>Postanski broj:</b></label>
           <label className='labProizvodi' > {korisnik.adresa.postanskiBroj}</label>
-          <label className='labProizvodi'><i class="bi bi-cart"/> 0 rsd</label>
-          <button className='btnProizvodi' onClick={()=>pogledajPorudzbine()}>Pogledaj svoju porudzbinu </button>
+        
+          <Button className='btnProizvodi' onClick={()=>pogledajPorudzbine()}>Pogledaj porudzbine </Button>
       </div>)}
 
       <div className='divRightProizvodi'>
@@ -557,9 +580,9 @@ export default function Proizvodi() {
               
           </select>
          
-             <label>Minimalna cena</label>
+             <label className='filterLab'>Minimalna cena</label>
              <input type='number'  onChange={e=>setMinCena(e.target.value)} ></input>
-             <label>Maximalna cena</label>
+             <label className='filterLab'>Maximalna cena</label>
              <input type='number'  onChange={e=>setMaxCena(e.target.value)} ></input>
              </div>
          <div>
@@ -621,9 +644,9 @@ export default function Proizvodi() {
                      })}</label>
                      <label>Ocena: {proizvod.ocena.toFixed(2)} (broj glasova: {proizvod.brojGlasova})</label>
                      <div className='dugmiciProizvod'>
-                         <button className='dugmeProizvod' onClick={()=>obrisiProizvod(proizvod.ime)}>Obrisi</button>
-                         <button className='dugmeProizvod' onClick={()=>izmeniProizvod(proizvod.id)}>Izmeni</button>
-                         <button className='dugmeProizvod' onClick={()=>setModal(true)}>Dodaj u <i class="bi bi-cart"/></button>
+                         <button className='dugmeProizvod' onClick={()=>obrisiProizvod(proizvod.naziv)}>Obrisi</button>
+                         <button className='dugmeProizvod' onClick={()=>izmeniProizvod(proizvod.naziv)}>Izmeni</button>
+                         <button className='dugmeProizvod' onClick={()=>{setNaruciProizvod(proizvod);setModal(true)}}>Dodaj u <i class="bi bi-cart"/></button>
                      </div>
                  </div>
              </div>
@@ -632,25 +655,7 @@ export default function Proizvodi() {
 
       </div>
 
-      <Modal show={modal} className='modaal'>
-              
-              <Modal.Body className='modaal'>
-              <label className='labModal'>Količina: 
-              <input className='inputModal' type="number"/></label>
-              <label className='labModal'>Veličina: 
-                  <select className='inputModal'>
-                      <option>XS</option>
-                      <option>S</option>
-                      <option>M</option>
-                      <option>L</option> 
-                      <option>XL</option>
-                  </select></label>
-             </Modal.Body>
-              <Modal.Footer >
-                  <Button >Potvrdi</Button>
-                  <Button onClick={()=>setModal(false)}>Poništi</Button>
-              </Modal.Footer>
-       </Modal>
+     <NaruciModal modal={modal} setModal={setModal} proizvod={naruciProizvod} mejl={korisnik.mail} />
        <Modal show={modalIzmeni} className='modaal'>
               
               <Modal.Body className='modaal'>
@@ -706,23 +711,7 @@ export default function Proizvodi() {
               </Modal.Footer>
           </Modal>
 
-          <Modal show={modalPorudzbina} className='modaal'>
-            <Modal.Body className='modaal'>
-                <div className='divModal'>
-                    <label>Naziv: Majica</label>
-                    <label>Velicina: L</label>
-                    <label>Cena: 2500</label>
-                    <label>Placena: Nije</label>
-                    <label>Datum placanja:/</label>
-                    <label>Datum porucivanja:25.06.2022. </label>
-
-                </div>
-            </Modal.Body>
-            <Modal.Footer >
-                <Button >Potvrdi</Button>
-                <Button onClick={()=>setModalPorudzbina(false)}>Ok</Button>
-            </Modal.Footer>
-         </Modal>
+         <Korpa setModalPorudzbina={setModalPorudzbina} modalPorudzbina={modalPorudzbina} mejl={korisnik.mail} />
 
 
 

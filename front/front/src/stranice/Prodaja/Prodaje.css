@@ -7,11 +7,11 @@
 }
 
 .tabla{
-    margin:70px;
+   
     margin-top: 20px;
     border-radius: 5px !important;
     border:2px solid white;
-    box-shadow:rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; ;
+    width:100%;
 }
 
 .unos{
