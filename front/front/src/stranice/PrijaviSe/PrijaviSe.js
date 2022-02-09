@@ -38,6 +38,8 @@ export default function PrijaviSe() {
             console.log(response1)
             const korisnik=await response1.json()
             console.log(korisnik)
+            localStorage.setItem('status',korisnik.status)
+            localStorage.setItem('prijavljen',true)
             setRedirect(true)
 
           }

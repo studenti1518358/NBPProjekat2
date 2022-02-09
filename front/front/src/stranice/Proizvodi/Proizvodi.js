@@ -1,4 +1,4 @@
-import React ,{useState,useMemo}from 'react'
+import React ,{useState,useMemo, useEffect}from 'react'
 import './Proizvodi.css'
 import axios from 'axios'
 import {FaStar} from 'react-icons/fa'
@@ -28,7 +28,7 @@ export default function Proizvodi() {
     const [slikaFile,setSlikaFile]=useState(null)
     const [velicinaIzmena,setVelicinaIzmena]=useState("")
     const [kolicinaIzmena,setKolicinaIzmena]=useState("")
-    const STAVKE_PO_STRANICI=5
+    const STAVKE_PO_STRANICI=3
     const [nazivNovi,setNazivNovi]=useState("")
     const [tipNovi,setTipNovi]=useState("")
     const [cenaNovi,setCenaNovi]=useState("")
@@ -36,7 +36,45 @@ export default function Proizvodi() {
     const [velicineNovi,setVelicineNovi]=useState("")
     const [kolicineNovi,setKolicineNovi]=useState("")
     const [velKolNovi,setVelKolNovi]=useState([])
-    
+    const [mojiProizvodi,setMojiProizvodi]=useState([])
+    const [ukupnoProizvoda,setUkupnoProizvoda]=useState(0)
+    const [minCena,setMinCena]=useState(0)
+    const [maxCena,setMaxCena]=useState(10000000)
+    const [tipovi,setTipovi]=useState([])
+    const [tip,setTip]=useState('Svi')
+    const [ocene,setOcene]=useState([])
+    const prijavljen=localStorage.getItem('prijavljen')
+    const [korisnik,setKorisnik]=useState({})
+
+    useEffect(()=>{
+        const preuzmi=async()=>{
+            const response=await fetch('http://localhost:5000/Prodavnica/getProdavnica')
+            console.log(response)
+            if(response.status===200){
+                const prodavnica=await response.json()
+                console.log(prodavnica)
+                if(prodavnica.tipoviProizvoda){
+                    
+                    const tipovi=prodavnica.tipoviProizvoda
+                    tipovi.unshift('Svi')
+                    setTipovi(tipovi)
+                }
+            }
+            const response1=await fetch('http://localhost:5000/Korisnik/getKorisnik',{
+         
+                headers:{'Content-Type':'application/json'},
+                credentials:'include'
+                
+               
+              })
+            if(response1.status===200){
+                const kor=await response1.json()
+                setKorisnik(kor)
+            }
+        }
+        preuzmi()
+
+    },[])
     const niz=[
         {
             id:'1',
@@ -408,38 +446,108 @@ export default function Proizvodi() {
 
  }
 
+ const pretraziProizvode=()=>{
+     const pretraga=async()=>{
+         const response=await fetch("http://localhost:5000/Proizvod/pretraziProizvode",{
+            method:"POST",
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(
+                {
+                    tipProizvoda: tip,
+                    brojStranice: 0,
+                    brProizvodaPoStranici: 20,
+                    minCena: minCena,
+                    maxCena: maxCena
+                  }
+            )
+          })
+          if(response.status===200){
+              const ukupno=await response.json()
+              console.log(ukupno)
+              const response1=await fetch("http://localhost:5000/Proizvod/pretraziProizvode",{
+                method:"POST",
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify(
+                    {
+                        tipProizvoda: tip,
+                        brojStranice: 1,
+                        brProizvodaPoStranici: 3,
+                        minCena: minCena,
+                        maxCena:maxCena
+                      }
+                )
+              })
+              if(response1.status===200){
+                  const proizvodi=await response1.json()
+                  console.log(proizvodi)
+                  setTrStranica(1)
+                  setMojiProizvodi(proizvodi)
+                  setUkupnoProizvoda(ukupno)
+                  setOcene(proizvodi.map(x=>x.ocena))
+              }
+
+          }
+     }
+     pretraga()
+ }
+ useEffect(()=>{
+
+    const nadjiProizvode=async()=>{
+        const response1=await fetch("http://localhost:5000/Proizvod/pretraziProizvode",{
+            method:"POST",
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(
+                {
+                    tipProizvoda: tip,
+                    brojStranice: trStranica,
+                    brProizvodaPoStranici: 3,
+                    minCena: minCena,
+                    maxCena: maxCena
+                  }
+            )
+          })
+          if(response1.status===200){
+              const proizvodi=await response1.json()
+              console.log(proizvodi)
+              setOcene(proizvodi.map(x=>x.ocena))
+              setMojiProizvodi(proizvodi)
+              
+          }
+
+    }
+    nadjiProizvode()
+
+ },[trStranica])
+
     
   return (
   <div className='divGlavniProizvodi'>
-      <div className='divLeftProizvodi'>
-          <label className='labProizvodi'>Ime: Andrea</label>
-          <label className='labProizvodi'>Prezime: Popović</label>
-          <label className='labProizvodi'>Ulica: BogdanaP</label>
-          <label className='labProizvodi'>Broj: 5</label>
-          <label className='labProizvodi'>Grad: Niš</label>
-          <label className='labProizvodi'>Broj racuna: 5555-9999</label>
+     {korisnik && korisnik.adresa && ( <div className='divLeftProizvodi'>
+          <label className='labProizvodi'><b>Ime:</b> {korisnik.ime}</label>
+          <label className='labProizvodi'><b>Prezime:</b> {korisnik.prezime}</label>
+          <label className='labProizvodi'><b>Ulica:</b> {korisnik.adresa.ulica}</label>
+          <label className='labProizvodi'><b>Broj:</b> {korisnik.adresa.broj}</label>
+          <label className='labProizvodi'><b>Grad:</b> {korisnik.adresa.mesto}</label>
+          <label className='labPostanski'><b>Postanski broj:</b></label>
+          <label className='labProizvodi' > {korisnik.adresa.postanskiBroj}</label>
           <label className='labProizvodi'><i class="bi bi-cart"/> 0 rsd</label>
           <button className='btnProizvodi' onClick={()=>pogledajPorudzbine()}>Pogledaj svoju porudzbinu </button>
-      </div>
+      </div>)}
 
       <div className='divRightProizvodi'>
           <div className='divPomRight'>
           <PaginationComponent
              className='pagination'
-             ukupno={ukupnoStavki}
+             ukupno={ukupnoProizvoda}
             stavkePoStranici={STAVKE_PO_STRANICI}
             trenutnaStranica={trStranica}
             promeniStranicu={page=>setTrStranica(page)}/>
+           
           <i class="bi bi-funnel"/> 
-          <select>
-              <option value='0'> Sve</option>
-              <option value='1'> Majice</option>
-              <option value='2'> Bluze</option>
-              <option value='3'> Košulje</option>
-              <option value='4'> Jakne</option>
-              <option value='5'> Pantalone</option>
-              <option value='6'> Torbe</option>
-              <option value='7'> Kaiševi</option>
+          <select onChange={e=>setTip(e.target.value)}>
+             {tipovi.map(tip=>{
+                 return(<option value={tip}>{tip}</option>)
+             })}
           </select>
            <i class="bi bi-sort-down"/> 
            <select>
@@ -448,23 +556,53 @@ export default function Proizvodi() {
               <option value='2'> Prvo najjskuplje</option>
               
           </select>
-          <button className='dugmeProizvodd' onClick={()=>setModalDodaj(true)}>Dodaj novi proizvod </button>
+         
+             <label>Minimalna cena</label>
+             <input type='number'  onChange={e=>setMinCena(e.target.value)} ></input>
+             <label>Maximalna cena</label>
+             <input type='number'  onChange={e=>setMaxCena(e.target.value)} ></input>
+             </div>
+         <div>
+          <Button onClick={pretraziProizvode}>Pretrazi</Button>
+          <Button className='dugmeProizvodd' onClick={()=>setModalDodaj(true)}>Dodaj novi proizvod </Button>
           </div>
          <div className='proizvodiii'>
-         { svaRoba.map((proizvod,i)=>(
-             <div className='proizvod' key={i}>
+         { mojiProizvodi.map((proizvod,ind)=>(
+             <div className='proizvod' key={ind}>
                  <div className='divSlikaProizvoda'>
-                 <img src={proizvod.slika} alt='..' className='slikaProizvoda'/>
+                 <img src={proizvod.slikaSrc} alt='..' className='slikaProizvoda'/>
                  Oceni:
                  <div>               
                   {[...Array(5)].map((star,i)=>{
                      const pom=i+1
+                     const oceni=async(ocena)=>{
+                        setOcena(pom)
+                        let noveOcene=[...ocene]
+                        noveOcene[ind]=pom
+                        setOcene(noveOcene)
+                        const response=await fetch('http://localhost:5000/Proizvod/oceniProizvod/'+ocena+'/'+proizvod.naziv,{
+                        method:"POST",
+                        headers:{'Content-Type':'application/json'}})
+                        if(response.status===200){
+                            
+                            const novaOcena=await response.json()
+                            let proizvodi=[...mojiProizvodi]
+                            let izmenjenProizvod=proizvod
+                            izmenjenProizvod.ocena=novaOcena
+                            izmenjenProizvod.brojGlasova=proizvod.brojGlasova+1
+                            proizvodi[ind]=izmenjenProizvod
+                            setMojiProizvodi(proizvodi)
+                        
+                        }
+
+                     }
                      return (
+
                     <label>
                         <input type='radio' name='ocena' size={5} value={pom} className='inputOcena'
-                        onClick={()=>setOcena(pom)}
+                        onClick={()=>oceni(pom)}
                         />
-                        <FaStar size={25} className='star' color={pom<=ocena?"#ffc107":"e4e5e9"}/>
+                        <FaStar size={25} className='star' color={pom<=ocene[ind]?"#ffc107":"e4e5e9"}/>
                     </label>
                 
                 )})}
@@ -472,16 +610,16 @@ export default function Proizvodi() {
 
                  </div>
                  <div className='opisProizvoda'>
-                     <label>Naziv: {proizvod.ime} </label>
+                     <label>Naziv: {proizvod.naziv} </label>
                      <label>Tip artikla: {proizvod.tip}</label>
                      <label>Cena: {proizvod.cena}</label>
                      <label>Dostupne velicine: {proizvod.velicine.map((vel,i)=>{
                          return(
-                             <label> {vel.ime} : {vel.kolicina} </label>
+                             <label> {vel.naziv} ( {vel.kolicina} komada), </label>
                          )
 
                      })}</label>
-                     <label>Ocena: {proizvod.ocena}</label>
+                     <label>Ocena: {proizvod.ocena.toFixed(2)} (broj glasova: {proizvod.brojGlasova})</label>
                      <div className='dugmiciProizvod'>
                          <button className='dugmeProizvod' onClick={()=>obrisiProizvod(proizvod.ime)}>Obrisi</button>
                          <button className='dugmeProizvod' onClick={()=>izmeniProizvod(proizvod.id)}>Izmeni</button>

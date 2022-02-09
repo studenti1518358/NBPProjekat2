@@ -19,6 +19,10 @@
 .labProizvodi
 {
     margin-bottom: 20px;
+    
+}
+.labPostanski{
+    margin-bottom: 9px;
 }
 .btnProizvodi
 {
@@ -103,7 +107,7 @@
 }
 .pagination
 {
-    margin-right: 350px;
+    margin-right: 100px;
 }
 .labModal
 {

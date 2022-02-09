@@ -162,7 +162,12 @@ namespace back.Controllers
             var db = client.GetDatabase("butik");
 
             var proizvodi = db.GetCollection<Proizvod>("proizvodi");
-            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).Skip(parametri.BrojStranice!=0?parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1):0).Limit(parametri.BrProizvodaPoStranici).ToListAsync();
+            if(parametri.BrojStranice==0)
+                   {
+                       var ukupno=await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).CountAsync();
+                        return Ok(ukupno);
+                   }
+            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).SortBy(x=>x.Cena).Skip(parametri.BrojStranice!=0?parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1):0).Limit(parametri.BrProizvodaPoStranici).ToListAsync();
 
             return Ok(pretragaRez);
         }
