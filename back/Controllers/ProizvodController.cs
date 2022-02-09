@@ -31,18 +31,17 @@ namespace back.Controllers
         }
 
         [HttpPost]
-        [Route("dodajNoviProizvod")]
-        public async Task<IActionResult> DodajNoviProizvod([FromBody] NoviProizvod noviProizvod,[FromForm]IFormFile slika)
+        [Route("DodajNoviProizvod")]
+        public async Task<IActionResult> DodajNoviProizvod([FromBody] NoviProizvod noviProizvod)
         {
             var connectionString = "mongodb://localhost/?safe=true";
             var client = new MongoClient(connectionString);
             var db=client.GetDatabase("butik");
 
-            var slikaPom = await SacuvajSliku(slika);
-            string profilna = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, slikaPom);
+          
 
             var proizvodi = db.GetCollection<Proizvod>("proizvodi");
-            Proizvod proizvod = new Proizvod { BrojGlasova = 0, Ocena = 0, Naziv = noviProizvod.Naziv, Cena = noviProizvod.Cena, Opis = noviProizvod.Opis, SlikaSrc = profilna, Tip = noviProizvod.Tip, Velicine = noviProizvod.Velicine };
+            Proizvod proizvod = new Proizvod { BrojGlasova = 0, Ocena = 0, Naziv = noviProizvod.Naziv, Cena = noviProizvod.Cena, Opis = noviProizvod.Opis, SlikaSrc = noviProizvod.SlikaSrc, Tip = noviProizvod.Tip, Velicine = noviProizvod.Velicine };
 
             await proizvodi.InsertOneAsync(proizvod);
             var prodavnica = await db.GetCollection<Prodavnica>("prodavnica").Find(x => true).FirstOrDefaultAsync();
@@ -55,6 +54,18 @@ namespace back.Controllers
                 await prodavcnicaCol.ReplaceOneAsync(p => true, prodavnica);
             }
             return Ok("Novi proizvod uspesno dodat");
+
+        }
+        [HttpPost]
+        [Route("DodajNovuSliku")]
+        public async Task<IActionResult> DodajNovuSliku([FromForm]IFormFile slikaFile)
+        {
+            
+            var slikaPom = await SacuvajSliku(slikaFile);
+            string profilna = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, slikaPom);
+
+          
+            return Ok(profilna);
 
         }
         [NonAction]
@@ -102,16 +113,15 @@ namespace back.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("azurirajProizvod")]
-        public async Task<IActionResult> AzurirajProizvod([FromBody]Proizvod proizvod,[FromForm] IFormFile slika)
+        public async Task<IActionResult> AzurirajProizvod([FromBody]Proizvod proizvod)
         {
             var connectionString = "mongodb://localhost/?safe=true";
             var client = new MongoClient(connectionString);
             var db = client.GetDatabase("butik");
 
-            var slikaPom = await SacuvajSliku(slika);
-            string profilna = String.Format("{0}://{1}{2}/Images/{3}", Request.Scheme, Request.Host, Request.PathBase, slikaPom);
+          
 
             var proizvodi = db.GetCollection<Proizvod>("proizvodi");
             var result = await proizvodi.ReplaceOneAsync(p => p.Naziv == proizvod.Naziv, proizvod);
