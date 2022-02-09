@@ -8,6 +8,7 @@ import Formular from './stranice/PrijaviSe/Formular'
 import Proizvodi from './stranice/Proizvodi/Proizvodi'
 import Prodaje from './stranice/Prodaja/Prodaje'
 import Narudzbine from './stranice/Narudzbine/Narudzbine'
+import Korisnik from './stranice/Korisnici/Korisnik'
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
 import Grafikon from './stranice/Prodaja/Grafikon'
@@ -26,6 +27,8 @@ function App() {
           <Route path='/Prodaje' element={<Prodaje />}/>
           <Route path='/Grafikon' element={<Grafikon />}/>
           <Route path='/Narudzbine' element={<Narudzbine/>}/>
+          <Route path='/Korisnik/:mail' element={<Korisnik/>}/>
+
           
         </Routes>
       </Router>

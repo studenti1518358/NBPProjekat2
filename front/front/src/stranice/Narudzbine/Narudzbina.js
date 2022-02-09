@@ -1,6 +1,12 @@
 import {Button} from 'react-bootstrap'
 import './Narudzbine.css'
+import { useNavigate} from "react-router-dom"
 export default function Narudzbina({narudzbina}){
+    const navigate=useNavigate()
+    const prikazi=()=>{
+        navigate("/Korisnik/"+narudzbina.emailKupca)
+
+    }
 
     return(
 
@@ -11,7 +17,7 @@ export default function Narudzbina({narudzbina}){
             <td>{narudzbina.placena?'Placena':(<Button>Oznaci kao placenu</Button>)}</td>
             <td>{new Date(narudzbina.datumPorudzbine).toDateString()}</td>
             <td>{narudzbina.datumPlacanja?new Date(narudzbina.datumPlacanja).toDateString():'/'}</td>
-            <td>{narudzbina.emailKupca} <div className='kupacLink'>vidi informacije</div></td>
+            <td>{narudzbina.emailKupca} <div className='kupacLink' onClick={prikazi}>vidi informacije</div></td>
           
           
         </tr>

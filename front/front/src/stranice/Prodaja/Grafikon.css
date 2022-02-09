@@ -1,3 +1,9 @@
 .grafikon{
     width:70%;
+    margin-left: 180px;
+}
+.unosStatistika{
+    display:flex;
+    justify-content: space-between;
+    margin:30px;
 }

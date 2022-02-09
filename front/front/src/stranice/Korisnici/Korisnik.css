@@ -1,0 +1,29 @@
+.adresa{
+    border:1px solid black;
+    width:50%;
+    margin:auto;
+    margin-top: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.podaciNaslov{
+    margin:20px;
+}
+.licniPodaci{
+    border:1px solid black;
+    border-radius: 5px;
+    width:40%;
+    margin:auto;
+    margin-top: 20px;
+    background-color: white;
+
+}
+.pozadina{
+    background-image: url("pozadina2.jpg");
+    height:580px !important;
+    overflow: hidden;
+    margin:0px;
+    padding:0px;
+   border:1px solid grey;
+ 
+}
