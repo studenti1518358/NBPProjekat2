@@ -15,6 +15,9 @@ export default function Prodaje(){
     const [stavke,setStavke]=useState([])
     const [trStranica,setTrStranica]=useState(1)
     const [ukupnaZarada,setUkupnaZarada]=useState(0)
+    const [prikazi,setPrikazi]=useState(false)
+    const [mesecZarada,setMesecZarada]=useState(1)
+    const meseci=['Januar','Februar','Mart','April','Maj','Jun','Jul','Avgust','Septembar','Oktobar','Novmebar','Decembar']
 
     useEffect(()=>{
         setStavke(prodaje.slice((trStranica-1)*6,(trStranica-1)*6+6))
@@ -34,6 +37,8 @@ export default function Prodaje(){
         
             setUkupnaZarada(niz.reduce((acc,x)=>x.cenaProizvoda+acc,0))
             //setProdaje(niz.map(el=>{return{...el,datumProdaje:new Date(el.datumProdaje)}}))
+            setPrikazi(true)
+            setMesecZarada(mesec)
 
         }
         else{
@@ -60,29 +65,12 @@ export default function Prodaje(){
            
         }
     ]
-    const getMesec=(ind)=>{
-       
-          switch(ind){
-              case 1:return 'Januar'
-              case 2:return 'Februar'; break
-              case 3:return 'Mart'
-              case 4:return 'April'
-              case 5:return 'Maj'
-              case 6:return 'Jun'
-              case 7:return 'Jul'
-              case 8:return 'Avgust'
-              case 9:return 'Septembar'
-              case 10:return 'Oktobar'
-              case 11:return 'Novembar'
-              case 12:return 'Decembar'
-              default:return 'ab'
-          }
-    }
+   
 
     return(
         <div className="tabla">
               <h3>Mesecna prodaje</h3>
-              <h5>Ukupna zarada za mesec {getMesec(mesec)} {godina}: <b>{ukupnaZarada}rsd</b></h5>
+         
                 <div className='unosStatistika'>
                     <div>
             <label>Mesec: </label>
@@ -108,6 +96,7 @@ export default function Prodaje(){
                 </div>
                 <Button onClick={pretrazi}>Pretrazi</Button>
                 </div>
+                {prikazi && <h5>Ukupna zarada za mesec {meseci[mesecZarada-1]} {godina}: <b>{ukupnaZarada}rsd</b></h5>}
                 <PaginationComponent
              className='pagination pagNar'
              ukupno={prodaje.length}

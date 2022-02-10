@@ -1,5 +1,6 @@
 import {Modal,Button,Table} from 'react-bootstrap'
 import {useState,useEffect} from 'react'
+
 export default function Korpa({modalPorudzbina,setModalPorudzbina,mejl}){
     const [narudzbine,setNarudzbine]=useState([])
     const [ukupno,setUkupno]=useState(0)
@@ -21,6 +22,26 @@ export default function Korpa({modalPorudzbina,setModalPorudzbina,mejl}){
         preuzmi()
 
     },[mejl])
+
+    const otkaziPorudzbinu=async(id)=>{
+        if(window.confirm('Da li ste sigurni da zelite da otkazete porudzbinu?')){
+            console.log(id)
+
+            const response=await fetch('http://localhost:5000/Narudzbine/otkaziPorudzbinu/'+id,{
+                method:"DELETE",
+                headers:{'Content-Type':'application/json'}
+                
+              })
+            if(response.status===200){
+                alert('Narudzbina otkazana')
+                setNarudzbine(prev=>prev.filter(nar=>nar.id!==id))
+            }
+            else alert('Ne mozete otkazati')
+            console.log(response)
+          
+
+        }
+    }
     
     return(
         <Modal show={modalPorudzbina} size='lg'>
@@ -49,9 +70,10 @@ export default function Korpa({modalPorudzbina,setModalPorudzbina,mejl}){
                     <td>{narudzbina.nazivProizvoda}</td>
                     <td>{narudzbina.cenaProizvoda}</td>
                     <td>{narudzbina.velicinaProizvoda}</td>
-                    <td>{narudzbina.placena?'Placena':'Nije placena'}</td>
+                    <td>{narudzbina.placena?'Placena':'Nije placena'}{!narudzbina.placena && (<Button onClick={()=>otkaziPorudzbinu(narudzbina.id)} variant='danger'>Otkazi</Button>)}</td>
                     <td>{new Date((narudzbina.datumPorudzbine)).toDateString()}</td>
                     <td>{narudzbina.datumPlacanja?new Date(narudzbina.datumPlacanja).toDateString():'/'}</td>
+                  
                    
                   
                   

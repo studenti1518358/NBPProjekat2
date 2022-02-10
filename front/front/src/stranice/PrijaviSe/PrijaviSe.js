@@ -40,7 +40,8 @@ export default function PrijaviSe() {
             console.log(korisnik)
             localStorage.setItem('status',korisnik.status)
             localStorage.setItem('prijavljen',true)
-            setRedirect(true)
+           // setRedirect(true)
+            window.location.reload()
 
           }
           else{
@@ -48,7 +49,7 @@ export default function PrijaviSe() {
           }
         }
     }
-    if(redirect)
+    if(localStorage.getItem('prijavljen'))
        return (<Navigate to='/Proizvodi'></Navigate>)
     return (
 

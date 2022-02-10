@@ -5,6 +5,7 @@
     flex-direction: column;
     width: 100%;
     height: 120vh;
+    height: fit-content;
 }
 .divCarousel
 {
@@ -43,6 +44,7 @@
     border: solid whitesmoke;
     margin-top: 50px;
     margin-left: 60px;
+    height: fit-content;
    
 }
 .pompomPocetna
@@ -51,6 +53,7 @@
     flex-direction: column;
     width: 33%;
     color:whitesmoke;
+    height: fit-content;
 }
 .footer
 {

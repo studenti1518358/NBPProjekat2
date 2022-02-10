@@ -6,6 +6,7 @@ import {Table,Button,Modal,Alert,Row} from 'react-bootstrap'
 import PaginationComponent from '../../komponente/PaginationComponent'
 import NaruciModal from './NaruciModal'
 import Korpa from './Korpa'
+import {useNavigate} from 'react-router-dom'
 export default function Proizvodi() {
     const [ocena,setOcena]=useState(null)
     const [ukupnoStavki,setUkupnoStavki]=useState(0)
@@ -49,6 +50,7 @@ export default function Proizvodi() {
     const [korisnik,setKorisnik]=useState({})
     const [naruciProizvod,setNaruciProizvod]=useState({})
     const [admin,setAdmin]=useState(false)
+    const navigate=useNavigate()
 
     useEffect(()=>{
         const preuzmi=async()=>{
@@ -74,6 +76,12 @@ export default function Proizvodi() {
             if(response1.status===200){
                 const kor=await response1.json()
                 setKorisnik(kor)
+            }
+            else
+            {
+                localStorage.clear()
+                navigate("/")
+               // window.location.reload()
             }
         }
         preuzmi()

@@ -27,6 +27,9 @@
     padding-left: 0.5cm;
     align-items: flex-start;
     font-size: 0.3cm;
+    position:-webkit-sticky;
+    position: sticky;
+    top:0;
 }
 .labProizvodi
 {
