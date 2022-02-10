@@ -7,7 +7,9 @@ import  Dropdown  from './Dropdown.js'
 
 const Navbar = () => {
   
-  const [dropdown, setDropdown] = useState(false);
+  
+  const [prijavljen,setPrijavljen]=useState(false)
+  const [admin,setAdmin]=useState(false)
   function animation(){
     var tabsNewAnim = $('#navbarSupportedContent')
     var activeItemNewAnim = tabsNewAnim.find('.active')
@@ -36,21 +38,23 @@ const Navbar = () => {
       })
     })
   }
-  const onMouseEnter = () => {
-    if (window.innerWidth < 960) {
-      setDropdown(false);
-    } else {
-      setDropdown(true);
-    }
-  }
+ 
+  const odjaviSe=async ()=>{
 
-  const onMouseLeave = () => {
-    if (window.innerWidth < 960) {
-      setDropdown(false);
-    } else {
-      setDropdown(false);
-    }
-  }
+    
+
+   await fetch('http://localhost:5000/Korisnik/odjaviKorisnika',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            credentials:'include'
+           
+           
+          });
+          setPrijavljen(false)
+       
+    localStorage.clear()
+    window.location.reload()
+}
 
   useEffect(() => {
     
@@ -58,6 +62,15 @@ const Navbar = () => {
     $(window).on('resize', function(){
       setTimeout(function(){ animation()}, 500)
     })
+    if(localStorage.getItem("prijavljen")==='true')
+    {
+      setPrijavljen(true)
+      if(localStorage.getItem("status")==='2')
+      {
+        setAdmin(true)
+      }
+
+    }
     
   }, [])
   
@@ -98,18 +111,41 @@ const Navbar = () => {
               </NavLink>
             </li>
 
+          {admin?  <li className="nav-item active">
+              <NavLink className="nav-link" to="/Prodaje" >
+               Prodaja
+              </NavLink>
+            </li>:null}
 
-            <li className="nav-item active">
+           {admin? <li className="nav-item active">
+              <NavLink className="nav-link" to="/Grafikon" >
+             Statistika
+              </NavLink>
+            </li>:null}
+            {admin? <li className="nav-item active">
+              <NavLink className="nav-link" to="/Narudzbine" >
+             Porudzbine
+              </NavLink>
+            </li>:null}
+
+
+           {prijavljen? null : <li className="nav-item active">
               <NavLink className="nav-link" to="/PrijaviSe" >
                Prijavi se
               </NavLink>
-            </li>
+            </li>}
 
-            <li className="nav-item active">
+            {prijavljen? null : <li className="nav-item active">
               <NavLink className="nav-link" to="/RegistrujSe" >
               Registruj se
               </NavLink>
-            </li>
+            </li>}
+           {prijavljen? <li className="nav-item active">
+              <NavLink className="nav-link" to="/" onClick={odjaviSe} >
+              Odjavi se
+              </NavLink>
+            </li> :null}
+
 
            
 

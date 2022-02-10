@@ -48,6 +48,7 @@ export default function Proizvodi() {
     const prijavljen=localStorage.getItem('prijavljen')
     const [korisnik,setKorisnik]=useState({})
     const [naruciProizvod,setNaruciProizvod]=useState({})
+    const [admin,setAdmin]=useState(false)
 
     useEffect(()=>{
         const preuzmi=async()=>{
@@ -76,220 +77,14 @@ export default function Proizvodi() {
             }
         }
         preuzmi()
+        if(localStorage.getItem("status")==='2')
+        {
+          setAdmin(true)
+        }
+  
 
     },[])
-    const niz=[
-        {
-            id:'1',
-            ime:"Dress Lucia",
-            tip:"Haljina",
-            cena:"3500",
-            velicine:[
-            {
-                ime:'s',
-                kolicina:'30',           
-            },
-            {
-                ime:'m',
-                kolicina:'40',           
-            },
-            {
-                ime:'l',
-                kolicina:'50',           
-            }],
-            ocena:"4,3",
-            slika:"/slike/haljina1.jpg"
-        },
-        {
-            id:'2',
-            ime:"Dress Mia",
-            tip:"Haljina",
-            cena:"5500",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,6",
-            slika:"/slike/haljina2.jpg"
-        },
-        {
-            id:'3',
-            ime:"Dress Alice",
-            tip:"Haljina",
-            cena:"6000",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,8",
-            slika:"/slike/haljina3.jpg"
-        },
-        {
-            id:'4',
-            ime:"Dress Melissa",
-            tip:"Haljina",
-            cena:"4500",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,3",
-            slika:"/slike/haljina4.jpg"
-        },
-        {
-            id:'5',
-            ime:"Dress Laya",
-            tip:"Haljina",
-            cena:"8500",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,6",
-            slika:"/slike/haljina6.jpg"
-        },
-        {
-            id:'6',
-            ime:"Jakna Lucia",
-            tip:"Jakna",
-            cena:"5500",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,3",
-            slika:"/slike/jakna1.jpg"
-        },
-        {
-            id:'7',
-            ime:"Jakna Wilaa",
-            tip:"Jakna",
-            cena:"6500",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,2",
-            slika:"/slike/jakna2.jpg"
-        },
-        {
-            id:'8',
-            ime:"Majica Wilaa",
-            tip:"Majica",
-            cena:"1500",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,2",
-            slika:"/slike/majica1.jpg"
-        },
-        {
-            id:'9',
-            ime:"Majica Alice",
-            tip:"Majica",
-            cena:"1500",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,3",
-            slika:"/slike/majica2.jpg"
-        },
-        {
-            id:'10',
-            ime:"Majica Kaya",
-            tip:"Majica",
-            cena:"1500",
-            velicine:[
-                {
-                    ime:'s',
-                    kolicina:'30',           
-                },
-                {
-                    ime:'m',
-                    kolicina:'40',           
-                },
-                {
-                    ime:'l',
-                    kolicina:'50',           
-                }],
-            ocena:"4,2",
-            slika:"/slike/majica3.jpg"
-        },
-    ]
+    
     const izmeniProizvod=(ime)=> {
          
         const pr=mojiProizvodi.filter(p=>p.naziv===ime)
@@ -419,7 +214,7 @@ export default function Proizvodi() {
 
   }
   const obrisiProizvod=(ime)=>{
-    fetch("http://localhost:5000/Proizvod/obrisiProizvod"+ime,{
+    fetch("http://localhost:5000/Proizvod/obrisiProizvod/"+ime,{
         method:"DELETE"
         
       }).then(q=>{
@@ -431,17 +226,6 @@ export default function Proizvodi() {
 
   }
 
-
-    const svaRoba=useMemo(()=>{
-      
-
-        let obv=niz;
-        
-        setUkupnoStavki(obv.length)
-    
-        return obv.slice((trStranica-1)*STAVKE_PO_STRANICI,(trStranica-1)*STAVKE_PO_STRANICI+STAVKE_PO_STRANICI)
-
-     },[proizvodi,trStranica])
 
  const pogledajPorudzbine=()=>{
      setModalPorudzbina(true)
@@ -587,7 +371,7 @@ export default function Proizvodi() {
              </div>
          <div>
           <Button onClick={pretraziProizvode}>Pretrazi</Button>
-          <Button className='dugmeProizvodd' onClick={()=>setModalDodaj(true)}>Dodaj novi proizvod </Button>
+        {admin?  <Button className='dugmeProizvodd' onClick={()=>setModalDodaj(true)}>Dodaj novi proizvod </Button>:null}
           </div>
          <div className='proizvodiii'>
          { mojiProizvodi.map((proizvod,ind)=>(
@@ -644,8 +428,8 @@ export default function Proizvodi() {
                      })}</label>
                      <label>Ocena: {proizvod.ocena.toFixed(2)} (broj glasova: {proizvod.brojGlasova})</label>
                      <div className='dugmiciProizvod'>
-                         <button className='dugmeProizvod' onClick={()=>obrisiProizvod(proizvod.naziv)}>Obrisi</button>
-                         <button className='dugmeProizvod' onClick={()=>izmeniProizvod(proizvod.naziv)}>Izmeni</button>
+                      {admin? <button className='dugmeProizvod' onClick={()=>obrisiProizvod(proizvod.naziv)}>Obrisi</button>:null}
+                      {admin?   <button className='dugmeProizvod' onClick={()=>izmeniProizvod(proizvod.naziv)}>Izmeni</button>:null}
                          <button className='dugmeProizvod' onClick={()=>{setNaruciProizvod(proizvod);setModal(true)}}>Dodaj u <i class="bi bi-cart"/></button>
                      </div>
                  </div>
