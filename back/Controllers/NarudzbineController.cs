@@ -95,6 +95,34 @@ namespace back.Controllers
             return Ok("Sve ok");
 
         }
+		[HttpDelete]
+		[Route("otkaziPorudzbinu/{narudzbinaId}")]
+		public async Task<IActionResult> OtkaziPorudzbinu(string narudzbinaId)
+		{
+			var connectionString = "mongodb://localhost/?safe=true";
+            var client = new MongoClient(connectionString);
+            var db = client.GetDatabase("butik");
+            var narudzbine = db.GetCollection<Narudzbina>("narudzbine");
+			 var narId = ObjectId.Parse(narudzbinaId);
+			  var narudzbina = await narudzbine.Find(x => x.Id == narId).FirstOrDefaultAsync();
+            if (narudzbina == null)
+                return BadRequest("Ne postoji ovakva narudzbina!");
+            if (narudzbina.Placena == true)
+                return BadRequest("Ne mozete otkazati vec placenu porudzbinu");
+			var nazivProizvoda=narudzbina.NazivProizvoda;
+			var velicina=narudzbina.VelicinaProizvoda;
+			   var proizvodi = db.GetCollection<Proizvod>("proizvodi");
+            
+            var proizvod = await proizvodi.Find(x => x.Naziv == nazivProizvoda).FirstOrDefaultAsync();
+			 var velicine = new List<Velicina>();
+            velicine.AddRange(proizvod.Velicine);
+            var Velicina = velicine.Find(x => x.Naziv ==velicina);
+            Velicina.Kolicina++;
+            var update = Builders<Proizvod>.Update.Set("Velicine", velicine);
+            await proizvodi.UpdateOneAsync(x => x.Naziv == narudzbina.NazivProizvoda, update);
+			await narudzbine.DeleteOneAsync(x=>x.Id==narId);
+            return Ok("Porudzbina uspesno otkazana");
+		}
         [HttpGet]
         [Route("getProdajeMeseca/{mesec}/{godina}")]
         public async Task<IActionResult> GetProdajeMeseca(int mesec,int godina)
