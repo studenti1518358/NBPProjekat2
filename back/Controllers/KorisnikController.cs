@@ -114,7 +114,37 @@ namespace back.Controllers
             return Ok(korisnik);
 
         }
+         [HttpPut]
+        [Route("azurirajKorisnika/{korisnikId}")]
+        public async Task<IActionResult> AzurirajProizvod(string korisnikId,[FromBody]Korisnik korisnik)
+        {
+            var connectionString = "mongodb://localhost/?safe=true";
+            var client = new MongoClient(connectionString);
+            var db = client.GetDatabase("butik");
+            //var filterDefinition=Builders<Proizvod>.Filter.Eq(x=>x.Id,proizvod.Id);
+           
 
+            var korisnici = db.GetCollection<Korisnik>("korisnici");
+           
+            var result = await korisnici.ReplaceOneAsync(x=>x.Id.Equals(ObjectId.Parse(korisnikId)), korisnik);
+           
+           return Ok("Korisnik uspesno azuriran");
+        }
+        [HttpDelete]
+        [Route("obrisiKorisnika/{mejlKorisnika}")]
+
+        public async Task<IActionResult> ObrisiKorisnika(string mejlKorisnika)
+        {
+            var connectionString = "mongodb://localhost/?safe=true";
+            var client = new MongoClient(connectionString);
+            var db = client.GetDatabase("butik");
+
+            var korisnici = db.GetCollection<Korisnik>("korisnici");
+            await korisnici.DeleteOneAsync(x => x.Mail == mejlKorisnika);
+
+            return Ok("Korisnik uspesno obrisan");
+
+        }
 
     }
 }

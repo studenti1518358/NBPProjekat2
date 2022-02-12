@@ -154,7 +154,9 @@ namespace back.Controllers
             {
                 {"_id","" },
                 {"ukupnaZarada",new BsonDocument("$sum","$CenaProizvoda") }
-            }).SingleAsync();
+            }).FirstOrDefaultAsync();
+            if(ukupnaZarada==null)
+               return NotFound("Nemate prodaja u ovom mesecu");
             var aggregate =await prodaje.Aggregate().Match(x => x.DatumProdaje >= prviUMesecu && x.DatumProdaje < prviUSledecem).
                 Group<ProizvodProdaja>(new BsonDocument
             {

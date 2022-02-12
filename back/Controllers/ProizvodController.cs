@@ -41,6 +41,9 @@ namespace back.Controllers
           
 
             var proizvodi = db.GetCollection<Proizvod>("proizvodi");
+            var istiProizvod=await proizvodi.Find(x=>x.Naziv==noviProizvod.Naziv).FirstOrDefaultAsync();
+           if(istiProizvod!=null)
+                return BadRequest("Proizvod sa ovakvim nazivom vec postoji!");
             Proizvod proizvod = new Proizvod { BrojGlasova = 0, Ocena = 0, Naziv = noviProizvod.Naziv, Cena = noviProizvod.Cena, Opis = noviProizvod.Opis, SlikaSrc = noviProizvod.SlikaSrc, Tip = noviProizvod.Tip, Velicine = noviProizvod.Velicine };
 
             await proizvodi.InsertOneAsync(proizvod);
@@ -114,18 +117,29 @@ namespace back.Controllers
         }
 
         [HttpPut]
-        [Route("azurirajProizvod")]
-        public async Task<IActionResult> AzurirajProizvod([FromBody]Proizvod proizvod)
+        [Route("azurirajProizvod/{proizvodId}")]
+        public async Task<IActionResult> AzurirajProizvod(string proizvodId,[FromBody]Proizvod proizvod)
         {
             var connectionString = "mongodb://localhost/?safe=true";
             var client = new MongoClient(connectionString);
             var db = client.GetDatabase("butik");
-
-          
+            var filterDefinition=Builders<Proizvod>.Filter.Eq(x=>x.Id,proizvod.Id);
+           
 
             var proizvodi = db.GetCollection<Proizvod>("proizvodi");
-            var result = await proizvodi.ReplaceOneAsync(p => p.Naziv == proizvod.Naziv, proizvod);
-            return Ok();
+            var stariNaziv=await proizvodi.Find(x=>x.Id.Equals(ObjectId.Parse(proizvodId))).Project(x=>x.Naziv).FirstOrDefaultAsync();
+            var result = await proizvodi.ReplaceOneAsync(x=>x.Id.Equals(ObjectId.Parse(proizvodId)), proizvod);
+            if(stariNaziv!=proizvod.Naziv)
+           {
+            var narudzbine=db.GetCollection<Narudzbina>("narudzbine");
+            var updateNar = Builders<Narudzbina>.Update.Set("NazivProizvoda", proizvod.Naziv);
+            await narudzbine.UpdateManyAsync(x=>x.NazivProizvoda==stariNaziv,updateNar);
+            var prodaje=db.GetCollection<Prodaja>("prodaje");
+            var updateProd = Builders<Prodaja>.Update.Set("NazivProizvoda", proizvod.Naziv);
+            await prodaje.UpdateManyAsync(x=>x.NazivProizvoda==stariNaziv,updateProd);
+            
+            }
+           return Ok("Proizvod uspesno azuriran");
         }
 
         [HttpPost]
@@ -167,7 +181,7 @@ namespace back.Controllers
                        var ukupno=await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).CountAsync();
                         return Ok(ukupno);
                    }
-            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).SortBy(x=>x.Cena).Skip(parametri.BrojStranice!=0?parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1):0).Limit(parametri.BrProizvodaPoStranici).ToListAsync();
+            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).SortBy(x=>x.Cena).Skip(parametri.BrojStranice!=0?parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1):0).Limit(parametri.BrProizvodaPoStranici).Project(x=>new{x.Naziv,x.Cena,x.Opis,x.SlikaSrc,x.Ocena,x.BrojGlasova,x.Velicine,x.Tip,id=x.Id.ToString()}).ToListAsync();
 
             return Ok(pretragaRez);
         }

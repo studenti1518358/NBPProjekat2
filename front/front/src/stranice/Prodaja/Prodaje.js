@@ -69,7 +69,7 @@ export default function Prodaje(){
 
     return(
         <div className="tabla">
-              <h3>Mesecna prodaje</h3>
+              <h3>Mesecne prodaje</h3>
          
                 <div className='unosStatistika'>
                     <div>

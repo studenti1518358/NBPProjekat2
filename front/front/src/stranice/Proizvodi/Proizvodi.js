@@ -50,6 +50,10 @@ export default function Proizvodi() {
     const [korisnik,setKorisnik]=useState({})
     const [naruciProizvod,setNaruciProizvod]=useState({})
     const [admin,setAdmin]=useState(false)
+	const [izmenaId,setIzmenaId]=useState("")
+	const [ocenaIzmena,setOcenaIzmena]=useState(0)
+	const [brGlasovaIzmena,setBrGlasovaIzmena]=useState(0)
+	//const [velicineIzmena,setNoveVelicine]=useState([])
     const navigate=useNavigate()
 
     useEffect(()=>{
@@ -93,26 +97,31 @@ export default function Proizvodi() {
 
     },[])
     
-    const izmeniProizvod=(ime)=> {
+    const izmeniProizvod=(id)=> {
          
-        const pr=mojiProizvodi.filter(p=>p.naziv===ime)
+        const pr=mojiProizvodi.find(p=>p.id===id)
+		
         console.log(pr)
-        setNazivIzmena(pr.map((pod)=>pod.naziv))
-        setTipIzmena(pr.map((pod)=>pod.tip))
-        setCenaIzmena(pr.map((pod)=>pod.cena))
+        setNazivIzmena(pr.naziv)
+        setTipIzmena(pr.tip)
+        setCenaIzmena(pr.cena)
+		setIzmenaId(id)
         let vel=""
         let kol=""
-        pr.map(pod=>{
-           pod.velicine.map(v=>{
+       
+           pr.velicine.map(v=>{
                vel+=v.naziv+","
                kol+=v.kolicina+","
 
            })
-        })
-        setVelicinaIzmena(vel)
-        setKolicinaIzmena(kol)
-        setOpisIzmena(pr.map((pod)=>pod.opis))
-        setSlikaIzmenaSrc(pr.map((pod)=>pod.slikaSrc))
+       
+        setVelicineIzmena(vel)
+		
+        setKolicineIzmena(kol)
+        setOpisIzmena(pr.opis)
+        setSlikaIzmenaSrc(pr.slikaSrc)
+		setOcenaIzmena(pr.ocena)
+		setBrGlasovaIzmena(pr.brojGlasova)
         setModalIzmeni(true)     
         
   }
@@ -183,36 +192,77 @@ export default function Proizvodi() {
       
       
   }
-  const IzmeniProizvod=()=>{
-
+  const IzmeniProizvod=async()=>{
+    console.log(velicineIzmena)
+	console.log(kolicineIzmena)
     var vel=velicineIzmena.split(',')
       var kol=kolicineIzmena.split(',')
-      
-      for(let i=0;i<vel.length;i++)
+	  console.log(vel)
+	  console.log(kol)
+	  const len=!vel[vel.length-1]?vel.length-1:vel.length
+      console.log(len)
+      for(let i=0;i<len;i++)
       {
-          velKolIzmena[i]={naziv:vel[i],kolicina:kol[i]}
+		 
+          velKolIzmena[i]={naziv:vel[i],kolicina:Number(kol[i])}
       }
       const formData=new FormData()
       formData.append("slikaFile",slikaIzmenaFile)
-      axios.post("http://localhost:5000/Proizvod/DodajNovuSliku",formData).then(p=>{  
-       
-        fetch("http://localhost:5000/Proizvod/azurirajProizvod",{
+	  if(!slikaIzmenaFile){
+		    const azuriranProizvod= {
+                    naziv: nazivIzmena,
+                    cena: cenaIzmena,
+                    opis: opisIzmena,
+                    slikaSrc: slikaIzmenaSrc,
+                    velicine: velKolIzmena,
+                    tip: tipIzmena,
+					ocena:ocenaIzmena,
+					brojGlasova:brGlasovaIzmena
+					
+                  }
+		    const response=await fetch("http://localhost:5000/Proizvod/azurirajProizvod/"+izmenaId,{
             method:"PUT",
             headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(
-                {
+            body:JSON.stringify(azuriranProizvod
+               
+            )
+          })
+		  if(response.status===200){
+			    setModalIzmeni(false)
+				  alert("Uspesno azurian proizvod")
+				  window.location.reload()
+		  }
+		  return
+	  }
+      axios.post("http://localhost:5000/Proizvod/DodajNovuSliku",formData).then(p=>{  
+	    const azuriranProizvod= {
                     naziv: nazivIzmena,
                     cena: cenaIzmena,
                     opis: opisIzmena,
                     slikaSrc: p.data,
                     velicine: velKolIzmena,
-                    tip: tipIzmena
+                    tip: tipIzmena,
+					ocena:ocenaIzmena,
+					brojGlasova:brGlasovaIzmena
+					
                   }
+				  console.log(izmenaId)
+				  console.log(azuriranProizvod)
+       
+        fetch("http://localhost:5000/Proizvod/azurirajProizvod/"+izmenaId,{
+            method:"PUT",
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(azuriranProizvod
+               
             )
           }).then(q=>{
+			  console.log(q)
+			  
               if(q.ok)
               {
                   setModalIzmeni(false)
+				  alert("Uspesno azurian proizvod")
+				  window.location.reload()
               }
           })
         
@@ -437,7 +487,7 @@ export default function Proizvodi() {
                      <label>Ocena: {proizvod.ocena.toFixed(2)} (broj glasova: {proizvod.brojGlasova})</label>
                      <div className='dugmiciProizvod'>
                       {admin? <button className='dugmeProizvod' onClick={()=>obrisiProizvod(proizvod.naziv)}>Obrisi</button>:null}
-                      {admin?   <button className='dugmeProizvod' onClick={()=>izmeniProizvod(proizvod.naziv)}>Izmeni</button>:null}
+                      {admin?   <button className='dugmeProizvod' onClick={()=>izmeniProizvod(proizvod.id)}>Izmeni</button>:null}
                          <button className='dugmeProizvod' onClick={()=>{setNaruciProizvod(proizvod);setModal(true)}}>Dodaj u <i class="bi bi-cart"/></button>
                      </div>
                  </div>
@@ -461,13 +511,14 @@ export default function Proizvodi() {
               <label className='labModal'>Tip:
               <input className='inputModal' type="text" defaultValue={tipIzmena} onChange={(e)=>setTipIzmena(e.target.value)} /></label>
               <label className='labModal'>Opis:
-              <input className='inputModal' type="text" defaultValue={tipIzmena} onChange={(e)=>setOpisIzmena(e.target.value)} /></label>
+              <input className='inputModal' type="text" defaultValue={opisIzmena} onChange={(e)=>setOpisIzmena(e.target.value)} /></label>
               <label className='labModal'>Cena: 
               <input className='inputModal' type="number" defaultValue={cenaIzmena} onChange={(e)=>setCenaIzmena(e.target.value)} /></label>
               <label className='labModal'>Veličine: 
-              <input className='inputModal' type="text" defaultValue={velicinaIzmena} onChange={(e)=>setVelicinaIzmena(e.target.value)}  /></label>
+              <input className='inputModal' type="text" value={velicineIzmena} onChange={(e)=>setVelicineIzmena(e.target.value)}  /></label>
               <label className='labModal'>Količina: 
-              <input className='inputModal' type="text" defaultValue={kolicinaIzmena} onChange={(e)=>setKolicineIzmena(e.target.value)}/></label>
+			 
+              <input className='inputModal' type="text"value={kolicineIzmena} onChange={(e)=>setKolicineIzmena(e.target.value)}/></label>
               
              </Modal.Body>
               <Modal.Footer >
