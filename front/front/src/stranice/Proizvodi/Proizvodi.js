@@ -407,28 +407,28 @@ export default function Proizvodi() {
             stavkePoStranici={STAVKE_PO_STRANICI}
             trenutnaStranica={trStranica}
             promeniStranicu={page=>setTrStranica(page)}/>
-           
+           <div className='tipovi'>
           <i class="bi bi-funnel"/> 
           <select onChange={e=>setTip(e.target.value)}>
              {tipovi.map(tip=>{
                  return(<option value={tip}>{tip}</option>)
              })}
           </select>
-           <i class="bi bi-sort-down"/> 
-           <select>
-              
-              <option value='1'> Prvo najjeftinje</option>
-              <option value='2'> Prvo najjskuplje</option>
-              
-          </select>
-         
+		  </div>
+          
+              <div className='grupa'>
              <label className='filterLab'>Minimalna cena</label>
              <input type='number'  onChange={e=>setMinCena(e.target.value)} ></input>
+			 </div>
+			 <div className='grupa'>
              <label className='filterLab'>Maximalna cena</label>
              <input type='number'  onChange={e=>setMaxCena(e.target.value)} ></input>
+			 </div>
+			   <Button className='pretraziDugme' onClick={pretraziProizvode}>Pretrazi</Button>
              </div>
+			  
          <div>
-          <Button onClick={pretraziProizvode}>Pretrazi</Button>
+        
         {admin?  <Button className='dugmeProizvodd' onClick={()=>setModalDodaj(true)}>Dodaj novi proizvod </Button>:null}
           </div>
          <div className='proizvodiii'>

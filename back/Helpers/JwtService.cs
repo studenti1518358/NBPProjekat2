@@ -13,7 +13,7 @@ namespace back.Helpers
             var credentials = new SigningCredentials(symmetricSecurityKey, algorithm: SecurityAlgorithms.HmacSha256Signature);
             var header = new JwtHeader(credentials);
 
-            var payload = new JwtPayload(userId, null, null, null, System.DateTime.Today.AddDays(1));
+            var payload = new JwtPayload(userId, null, null, null, System.DateTime.Today.AddDays(15));
 
             var token = new JwtSecurityToken(header, payload);
             return new JwtSecurityTokenHandler().WriteToken(token);
