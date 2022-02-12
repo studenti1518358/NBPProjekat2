@@ -181,7 +181,7 @@ namespace back.Controllers
                        var ukupno=await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).CountAsync();
                         return Ok(ukupno);
                    }
-            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena > parametri.MinCena && x.Cena < parametri.MaxCena).SortBy(x=>x.Cena).Skip(parametri.BrojStranice!=0?parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1):0).Limit(parametri.BrProizvodaPoStranici).Project(x=>new{x.Naziv,x.Cena,x.Opis,x.SlikaSrc,x.Ocena,x.BrojGlasova,x.Velicine,x.Tip,id=x.Id.ToString()}).ToListAsync();
+            var pretragaRez = await proizvodi.Find(x => (x.Tip == parametri.TipProizvoda || parametri.TipProizvoda=="Svi") && x.Cena >= parametri.MinCena && x.Cena <= parametri.MaxCena).SortBy(x=>x.Cena).Skip(parametri.BrojStranice!=0?parametri.BrProizvodaPoStranici * (parametri.BrojStranice - 1):0).Limit(parametri.BrProizvodaPoStranici).Project(x=>new{x.Naziv,x.Cena,x.Opis,x.SlikaSrc,x.Ocena,x.BrojGlasova,x.Velicine,x.Tip,id=x.Id.ToString()}).ToListAsync();
 
             return Ok(pretragaRez);
         }

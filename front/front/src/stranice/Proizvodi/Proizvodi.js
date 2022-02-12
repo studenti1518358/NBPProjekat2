@@ -157,10 +157,10 @@ export default function Proizvodi() {
      
       var vel=velicineNovi.split(',')
       var kol=kolicineNovi.split(',')
-      
+      const velicine=[]
       for(let i=0;i<vel.length;i++)
       {
-          velKolNovi[i]={naziv:vel[i],kolicina:kol[i]}
+          velicine[i]={naziv:vel[i],kolicina:kol[i]}
       }
       const formData=new FormData()
       formData.append("slikaFile",slikaFile)
@@ -175,7 +175,7 @@ export default function Proizvodi() {
                     cena: cenaNovi,
                     opis: opisNovi,
                     slikaSrc: p.data,
-                    velicine: velKolNovi,
+                    velicine: velicine,
                     tip: tipNovi
                   }
             )
@@ -183,6 +183,7 @@ export default function Proizvodi() {
               if(q.ok)
               {
                   setModalDodaj(false)
+				  alert("Uspesno dodat novi proizvod!")
               }
           })
         
@@ -278,6 +279,7 @@ export default function Proizvodi() {
       }).then(q=>{
           if(q.ok)
           {
+			  alert("Uspesno obrisan proizvod")
               window.location.reload()
           }
       })
@@ -301,8 +303,8 @@ export default function Proizvodi() {
                     tipProizvoda: tip,
                     brojStranice: 0,
                     brProizvodaPoStranici: 20,
-                    minCena: minCena,
-                    maxCena: maxCena
+                    minCena: minCena?minCena:0,
+                    maxCena: maxCena?maxCena:1000000
                   }
             )
           })
@@ -317,8 +319,8 @@ export default function Proizvodi() {
                         tipProizvoda: tip,
                         brojStranice: 1,
                         brProizvodaPoStranici: 3,
-                        minCena: minCena,
-                        maxCena:maxCena
+                        minCena: minCena?minCena:0,
+                        maxCena: maxCena?maxCena:1000000
                       }
                 )
               })
@@ -346,8 +348,8 @@ export default function Proizvodi() {
                     tipProizvoda: tip,
                     brojStranice: trStranica,
                     brProizvodaPoStranici: 3,
-                    minCena: minCena,
-                    maxCena: maxCena
+                    minCena: minCena?minCena:0,
+                    maxCena:  maxCena?maxCena:1000000
                   }
             )
           })
@@ -367,8 +369,8 @@ export default function Proizvodi() {
                     tipProizvoda: tip,
                     brojStranice: 0,
                     brProizvodaPoStranici: 20,
-                    minCena: minCena,
-                    maxCena: maxCena
+                    minCena: minCena?minCena:0,
+                    maxCena:  maxCena?maxCena:1000000
                   }
             )
           })
@@ -478,6 +480,7 @@ export default function Proizvodi() {
                      <label>Naziv: {proizvod.naziv} </label>
                      <label>Tip artikla: {proizvod.tip}</label>
                      <label>Cena: {proizvod.cena}</label>
+					 <label>Opis: {proizvod.opis}</label>
                      <label>Dostupne velicine: {proizvod.velicine.map((vel,i)=>{
                          return(
                              <label> {vel.naziv} ( {vel.kolicina} komada), </label>
@@ -542,10 +545,12 @@ export default function Proizvodi() {
               <input className='inputModal' type="number" onChange={(e)=>setCenaNovi(e.target.value)}/></label>
               <label className='labModal'>Opis: 
               <input className='inputModal' type="text" onChange={(e)=>setOpisNovi(e.target.value)}/></label>
-              <label className='labModal'>Veličine: 
-              <input className='inputModal' type="text" onChange={(e)=>setVelicineNovi(e.target.value)}/></label>
-              <label className='labModal'>Količina: 
-              <input className='inputModal' type="text" onChange={(e)=>setKolicineNovi(e.target.value)}/></label>
+			 
+              <label className='labModal'>Veličine:
+			 
+              <input className='inputModal' type="text" placeholder="s,m,l" onChange={(e)=>setVelicineNovi(e.target.value)}/> </label>
+              <label className='labModal'>Količine:
+              <input className='inputModal' type="text" placeholder="1,1,1" onChange={(e)=>setKolicineNovi(e.target.value)}/></label>
               
              </Modal.Body>
               <Modal.Footer >

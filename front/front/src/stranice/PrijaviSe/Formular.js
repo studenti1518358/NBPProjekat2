@@ -11,7 +11,7 @@ export default function FormPrva({mail,lozinka,setDalje}) {
     const [mesto,setMesto]=useState("")
     const [postanski,setPostanski]=useState("")
     const [brTel,setBrTel]=useState("")
-    const [status,setStatus]=useState("Kupac")
+    const [status,setStatus]=useState("1")
     const [uspesno,setUspesno]=useState(false)
     
    const registrujSe=async ()=>{
